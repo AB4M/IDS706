@@ -60,7 +60,7 @@ source ~/.IDS706_python_template/bin/activate
 ```
 ---
 
-Create a Makefile
+## Create a Makefile
 
 ```bash
 install:
