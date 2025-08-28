@@ -47,7 +47,7 @@ touch Makefile
 touch hello.py
 touch test_hello.py
 touch requirements.txt
-
+```
 ---
 
 ## Setup Python Environment (if you're not using a Dev Container)
@@ -57,7 +57,7 @@ If you're working outside of a dev container, you can manually create and activa
 ```bash
 python3 -m venv ~/.IDS706_python_template
 source ~/.IDS706_python_template/bin/activate
-
+```
 ---
 
 Create a Makefile
@@ -80,7 +80,7 @@ clean:
     rm -rf __pycache__ .pytest_cache .coverage
 
 all: install format lint test
-
+```
 ---
 
 ## Create a requirements.txt file
@@ -91,7 +91,7 @@ pytest
 click
 black
 pytest-cov
-
+```
 ---
 
 ## VS Code Dev Containers (Suggested)
@@ -107,7 +107,7 @@ after you make changes to your container, such as installing a packages, you'll 
 
 ```bash
 make install
-
+```
 ---
 
 ## Create a simple Python script
@@ -121,7 +121,7 @@ def say_hello(name: str) -> str:
 def add(a: int, b: int) -> int:
     """Return the sum of two numbers."""
     return a + b
-
+```
 ---
 
 ## Create a test file
@@ -137,7 +137,7 @@ def test_say_hello():
 
 def test_add():
     assert add(2, 3) == 5
-  
+```
 ---
 
 Run the tests
@@ -160,7 +160,7 @@ make clean
 git add .
 git commit -m "Initial commit with Python template setup"   
 git push origin main
-
+```
 ---
 
 ## Enable GitHub Actions
@@ -197,7 +197,7 @@ jobs:
 
 Commit and push this file to your repository.
 GitHub Actions will run automatically on every push or pull request!
-
+```
 ---
 
 ## View the Actions tab
