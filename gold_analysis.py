@@ -1,33 +1,3 @@
-#!/usr/bin/env python3
-"""
-gold_analysis.py
-
-A compact end‑to‑end analysis for /mnt/data/gold_data_2015_25.csv that demonstrates:
-
-1) Import & Inspect
-   - .head(), .info(), .describe()
-
-2) Basic Filtering & Grouping
-   - Filter rows by simple conditions
-   - Group by calendar year and compute summary stats
-
-3) Simple Regression
-   - Linear regression: GLD ~ SPX + USO + SLV + EUR/USD
-   - Train/test split and evaluation
-
-4) Visualization
-   - A single matplotlib scatter plot with a fitted regression line
-
-5) Documentation output
-   - Writes a README.md summarizing the steps and findings
-
-Usage:
-    python gold_analysis.py
-
-Outputs (in the same directory as the script):
-    - scatter_gld_spx.png
-    - README.md
-"""
 from __future__ import annotations
 
 import os
@@ -38,7 +8,6 @@ import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 
-# Avoid using seaborn per instruction; keep matplotlib default settings.
 from sklearn.model_selection import train_test_split
 from sklearn.linear_model import LinearRegression
 from sklearn.metrics import r2_score, mean_absolute_error, mean_squared_error
