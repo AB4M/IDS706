@@ -47,4 +47,4 @@ import numpy, pandas and matplotlib to process the data.
 - Slope ≈ 0.0352
 - R² ≈ 0.854 → strong linear relationship.
 - Visualization: A clear upward trend between SPX and GLD, with fitted regression line.
-<img width="138" height="98" alt="image" src="https://github.com/user-attachments/assets/ca0749cd-88b3-4db5-9c76-052cc356a84e" />
+<img width="690" height="490" alt="image" src="https://github.com/user-attachments/assets/ca0749cd-88b3-4db5-9c76-052cc356a84e" />
