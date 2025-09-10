@@ -6,12 +6,12 @@ The goal of this project is to analyze gold-related financial data 2015 to 2025.
 ## Data Source
 - **File:** `gold_data_2015_25.csv`  
 - **Content:**  
-  SPX – S&P 500 Index daily closing prices.
-  GLD – SPDR Gold Shares ETF daily adjusted closing prices.
-  USO – United States Oil Fund ETF daily adjusted closing prices.
-  SLV – iShares Silver Trust ETF daily adjusted closing prices.
-  EUR/USD – Daily Euro to US Dollar exchange rate.
-  Data covers **2666 trading days** between 2015 and 2025.  
+  - SPX – S&P 500 Index daily closing prices.
+  - GLD – SPDR Gold Shares ETF daily adjusted closing prices.
+  - USO – United States Oil Fund ETF daily adjusted closing prices.
+  - SLV – iShares Silver Trust ETF daily adjusted closing prices.
+  - EUR/USD – Daily Euro to US Dollar exchange rate.
+  - Data covers **2666 trading days** between 2015 and 2025.  
 
 ---
 
@@ -40,11 +40,11 @@ import numpy, pandas and matplotlib to process the data.
 ---
 
 ## Outcomes
-Dataset Overview: 2666 rows × 6 columns.
-Numeric Columns: SPX, GLD, USO, SLV, EUR/USD.
-Regression Result (GLD ~ SPX):
-Intercept ≈ 34.54
-Slope ≈ 0.0352
-R² ≈ 0.854 → strong linear relationship.
-Visualization: A clear upward trend between SPX and GLD, with fitted regression line.
-<img width="1380" height="980" alt="image" src="https://github.com/user-attachments/assets/ca0749cd-88b3-4db5-9c76-052cc356a84e" />
+- Dataset Overview: 2666 rows × 6 columns.
+- Numeric Columns: SPX, GLD, USO, SLV, EUR/USD.
+- Regression Result (GLD ~ SPX):
+- Intercept ≈ 34.54
+- Slope ≈ 0.0352
+- R² ≈ 0.854 → strong linear relationship.
+- Visualization: A clear upward trend between SPX and GLD, with fitted regression line.
+<img width="138" height="98" alt="image" src="https://github.com/user-attachments/assets/ca0749cd-88b3-4db5-9c76-052cc356a84e" />
