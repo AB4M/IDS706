@@ -1,6 +1,7 @@
 # Gold Data Analysis Project
 
 ## Project layout
+```
 .
 ├─ gold_analysis.py
 ├─ requirements.txt
@@ -8,10 +9,11 @@
 │  └─ test_gold_analysis.py
 ├─ Dockerfile
 └─ .gitignore
+```
 
 ## Docker — reproducible environment
-Build the image: docker run --rm gold-analysis:dev
-Run tests: docker run --rm gold-analysis:dev
+- Build the image: docker run --rm gold-analysis:dev
+- Run tests: docker run --rm gold-analysis:dev
 
 ## What the tests cover
 - tests/test_gold_analysis.py runs an end-to-end execution of the script and checks:
