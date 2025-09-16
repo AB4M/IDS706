@@ -31,7 +31,7 @@ if len(numeric_cols) > 0:
 print("\nFiltered data set")
 print(filtered_df.shape)
 #Grouping
-df["Date"] = pd.to_datetime(df["Date"], errors="coerce")
+df["Date"] = pd.to_datetime(df["Date"], format="%Y-%m-%d", errors="coerce")
 annual = (
     df.dropna(subset=["GLD"])
       .groupby(df["Date"].dt.year)
