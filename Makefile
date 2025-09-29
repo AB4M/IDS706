@@ -1,15 +1,22 @@
+PYTHON=python
+
 install:
-	pip install --upgrade pip &&\
-		pip install -r requirements.txt
+	$(PYTHON) -m pip install --upgrade pip
+	pip install -r requirements.txt
 
 format:
-	black gold_analysis.py
+	# Auto-format in place
+	black hello.py gold_analysis.py
+
+format-check:
+	# Fail CI if formatting is needed
+	black --check hello.py gold_analysis.py
 
 lint:
-	flake8 --ignore=C,N gold_analysis.py
+	flake8 --ignore=E203,E501,W503 hello.py gold_analysis.py
 
 test:
-	python -m pytest -vv --cov=hello test_hello.py
+	$(PYTHON) -m pytest -q
 
 clean:
 	rm -rf __pycache__ .pytest_cache .coverage
