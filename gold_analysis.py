@@ -8,6 +8,7 @@ import pandas as pd
 
 # 无界面后端，避免 CI 中的显示问题
 import matplotlib
+
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt  # noqa: E402
 
@@ -15,6 +16,7 @@ CSV_PATH = "./gold_data_2015_25.csv"
 
 
 # ---------- Helpers (extracted methods) ----------
+
 
 def load_raw_df(path: str = CSV_PATH) -> pd.DataFrame:
     """Load CSV to DataFrame."""
@@ -172,8 +174,7 @@ else:
     # 6) 合并得到最终 annual，包含 Year / <col>_mean / <col>_count
     annual = pd.merge(annual_mean, annual_cnt, on="Year", how="left")
 
-    # 7) 回归：**按测试期望在样本级别拟合 A ~ GLD（y=A, x=GLD）**
-    #    若不存在 A 列，则回退到年度均值 vs 年份（兼容性兜底）
+    # 7) 回归：按测试期望在样本级别拟合 A ~ GLD（y=A, x=GLD）
     if "A" in filtered_df.columns:
         slope, intercept, r2 = simple_linear_regression(
             filtered_df.dropna(subset=[ref_col, "A"]), x_col=ref_col, y_col="A"
