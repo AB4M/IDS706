@@ -25,7 +25,7 @@
 - Simple regression behavior (slope & R² sanity; constant-target edge case)
 
 ## Project Goal
-The goal of this project is to analyze gold-related financial data 2015 to 2025.  
+The goal of this project is to analyze gold-related financial data 2015 to 2025 to find out meaningful correlations.
 
 ## Data Source
 - **File:** `gold_data_2015_25.csv`  
@@ -64,5 +64,5 @@ import numpy, pandas and matplotlib to process the data.
 - Intercept ≈ 34.54
 - Slope ≈ 0.0352
 - R² ≈ 0.854 → strong linear relationship.
-- Visualization: A clear upward trend between SPX and GLD, with fitted regression line.
+- Visualization: A clear upward trend between SPX and GLD, with fitted regression line. This is a clear sign that the movement of SPX and GLD are identical. So it may be good practice to buy and sell gold according to the movement of SPX. Or it may be good practice to buy and sell stock according to the movement of gold price.
 <img width="690" height="490" alt="image" src="https://github.com/user-attachments/assets/ca0749cd-88b3-4db5-9c76-052cc356a84e" />
