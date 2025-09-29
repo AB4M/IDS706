@@ -1,6 +1,6 @@
-import numpy as np
-import pandas as pd
-import matplotlib.pyplot as plt
+import numpy as np # type: ignore
+import pandas as pd # type: ignore
+import matplotlib.pyplot as plt # type: ignore
 
 # 1) Import the Dataset
 df = pd.read_csv("./gold_data_2015_25.csv")
@@ -51,13 +51,13 @@ if len(numeric_cols) >= 2:
     X = reg_df[[x_col]].values
     y = reg_df[y_col].values
 
-    slope, intercept = np.polyfit(reg_df[x_col].values, reg_df[y_col].values, deg=1)
+    s, itcpt = np.polyfit(reg_df[x_col].values, reg_df[y_col].values, deg=1)
 
     print(f"\nSimple Regression {y_col} ~ {x_col} ")
-    print(f"Intercept: {intercept:.2f}")
-    print(f"Slope:     {slope:.2f}")
+    print(f"Intercept: {itcpt:.2f}")
+    print(f"Slope:     {s:.2f}")
 
-    y_pred = intercept + slope * reg_df[x_col].values
+    y_pred = itcpt + s * reg_df[x_col].values
     ss_res = np.sum((reg_df[y_col].values - y_pred) ** 2)
     ss_tot = np.sum((reg_df[y_col].values - np.mean(reg_df[y_col].values)) ** 2)
     r2 = 1 - ss_res / ss_tot if ss_tot != 0 else np.nan
@@ -69,7 +69,7 @@ plt.figure(figsize=(7, 5))
 if x_col is not None and y_col is not None:
     plt.scatter(reg_df[x_col], reg_df[y_col], alpha=0.6)
     xs = np.linspace(reg_df[x_col].min(), reg_df[x_col].max(), 100)
-    ys = intercept + slope * xs
+    ys = itcpt + s * xs
     plt.plot(xs, ys)
     plt.title(f"Scatter of {y_col} vs {x_col} (with linear fit)")
     plt.xlabel(x_col)
