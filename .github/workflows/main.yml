@@ -1,41 +1,33 @@
-name: CI - Devcontainer Test
+name: CI - Python Tests
 
 on:
   push:
     branches: [ main, master ]
   pull_request:
 
-concurrency:
-  group: devcontainer-ci-${{ github.ref }}
-  cancel-in-progress: true
-
 jobs:
   test:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout
+        uses: actions/checkout@v4
 
-      # 可选：加速 Docker 构建
-      - uses: docker/setup-buildx-action@v3
-
-      - name: Run tests inside Dev Container
-        uses: devcontainers/ci@v0.3
+      - name: Set up Python
+        uses: actions/setup-python@v5
         with:
-          # 如果 devcontainer 在子目录，指定它（默认是仓库根目录）
-          # subFolder: ./.devcontainer
-          # 或者直接点名配置文件（2 选 1）
-          # configFile: .devcontainer/devcontainer.json
+          python-version: "3.11"
 
-          # 使用 GHA 缓存加速构建（可选但推荐）
-          cacheFrom: |
-            type=gha
-          cacheTo: |
-            type=gha,mode=max
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
 
-          # 在 Dev Container 中执行的命令 —— 换成你的真实测试命令
-          runCmd: |
-            python -V || node -v || true
-            pytest -q              # Python 项目
-            # npm ci && npm test   # Node 项目（改成你的）
-            # make test            # 其他项目（改成你的）
+      - name: Lint (flake8)
+        run: make lint
+
+      - name: Format check (black --check)
+        run: make format-check
+
+      - name: Run tests
+        run: make test
