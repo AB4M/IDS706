@@ -14,16 +14,13 @@ import matplotlib.pyplot as plt  # noqa: E402
 
 CSV_PATH = "./gold_data_2015_25.csv"
 
-
 def load_raw_df(path: str = CSV_PATH) -> pd.DataFrame:
     """Load CSV to DataFrame."""
     return pd.read_csv(path)
 
-
 def detect_numeric_columns(df: pd.DataFrame) -> List[str]:
     """Return list of numeric columns (float/int), preserving order."""
     return [c for c, dt in df.dtypes.items() if np.issubdtype(dt, np.number)]
-
 
 def clean_dataframe(
     df: pd.DataFrame,
@@ -47,7 +44,6 @@ def clean_dataframe(
     cleaned = cleaned[(cleaned[target_col] >= lo) & (cleaned[target_col] <= hi)].copy()
     return cleaned
 
-
 def ensure_year_column(df: pd.DataFrame) -> pd.DataFrame:
     """
     Ensure a 'Year' column exists.
@@ -64,22 +60,22 @@ def ensure_year_column(df: pd.DataFrame) -> pd.DataFrame:
             out["Year"] = pd.Series([np.nan] * len(out), index=out.index)
     return out
 
-
 def build_annual_agg(df: pd.DataFrame, value_col: str) -> pd.DataFrame:
     """Aggregate by Year for the given value column: mean and non-null count."""
     if "Year" not in df.columns:
         raise KeyError("DataFrame must contain 'Year' before aggregation.")
     annual = (
-        df.dropna(subset=["Year"])
-          .groupby("Year", as_index=False)[value_col]
-          .agg(["mean", "count"])           # 同时聚合：均值 + 计数（非空）
+        df.dropna(subset=["Year"])[["Year", value_col]]
+          .groupby("Year", dropna=True)
+          .agg(
+              **{
+                  f"{value_col}_mean": (value_col, "mean"),
+                  f"{value_col}_count": (value_col, "count"),
+              }
+          )
           .reset_index()
     )
-    # 列重命名：Year, <col>_mean, <col>_count
-    annual.columns = ["Year", f"{value_col}_mean", f"{value_col}_count"]
     return annual
-
-
 
 def simple_linear_regression(
     df: pd.DataFrame, x_col: str, y_col: str
@@ -104,7 +100,6 @@ def simple_linear_regression(
 
     return (float(slope), float(intercept), float(r2))
 
-
 def plot_scatter_with_fit(df: pd.DataFrame, x_col: str, y_col: str) -> None:
     """Simple scatter + fitted line (optional for notebooks; CI will no-op show)."""
     reg_df = df[[x_col, y_col]].dropna()
@@ -124,7 +119,6 @@ def plot_scatter_with_fit(df: pd.DataFrame, x_col: str, y_col: str) -> None:
     plt.ylabel(y_col)
     plt.tight_layout()
     plt.show()
-
 
 # ---------- Script body ----------
 dataframe = load_raw_df(CSV_PATH)
