@@ -1,4 +1,4 @@
-name: CI - Docker Build & Test
+name: CI - Devcontainer Test
 
 on:
   push:
@@ -6,32 +6,36 @@ on:
   pull_request:
 
 concurrency:
-  group: docker-ci-${{ github.ref }}
+  group: devcontainer-ci-${{ github.ref }}
   cancel-in-progress: true
 
 jobs:
-  build-and-test:
+  test:
     runs-on: ubuntu-latest
+
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-      - name: Show Docker versions (debug)
-        run: |
-          docker --version
-          docker buildx version || true
+      # 可选：加速 Docker 构建
+      - uses: docker/setup-buildx-action@v3
 
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
-
-      # 构建 test 目标；测试失败会让这一步直接失败
-      - name: Build (runs tests in Dockerfile target)
-        uses: docker/build-push-action@v6
+      - name: Run tests inside Dev Container
+        uses: devcontainers/ci@v0.3
         with:
-          context: .
-          file: ./Dockerfile
-          target: test
-          push: false
-          # 用 GHA 缓存后端，简单且命中率高
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
+          # 如果 devcontainer 在子目录，指定它（默认是仓库根目录）
+          # subFolder: ./.devcontainer
+          # 或者直接点名配置文件（2 选 1）
+          # configFile: .devcontainer/devcontainer.json
+
+          # 使用 GHA 缓存加速构建（可选但推荐）
+          cacheFrom: |
+            type=gha
+          cacheTo: |
+            type=gha,mode=max
+
+          # 在 Dev Container 中执行的命令 —— 换成你的真实测试命令
+          runCmd: |
+            python -V || node -v || true
+            pytest -q              # Python 项目
+            # npm ci && npm test   # Node 项目（改成你的）
+            # make test            # 其他项目（改成你的）
