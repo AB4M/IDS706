@@ -6,7 +6,7 @@ import pandas as pd
 import pytest
 
 # Utilities
-SCRIPT_PATH = Path('/mnt/data/gold_analysis.py')
+SCRIPT_PATH = Path(__file__).resolve().parent.parent / "gold_analysis.py"
 
 def write_csv(path: Path, df: pd.DataFrame):
     path.write_text(df.to_csv(index=False), encoding='utf-8')
