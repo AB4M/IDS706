@@ -8,7 +8,6 @@ import pandas as pd
 
 # 无界面后端，避免 CI 中的显示问题
 import matplotlib
-
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt  # noqa: E402
 
@@ -62,14 +61,13 @@ def ensure_year_column(df: pd.DataFrame) -> pd.DataFrame:
     if "Date" in out.columns:
         out["Year"] = pd.to_datetime(out["Date"], errors="coerce").dt.year
     else:
-        # 不提供 Date/Year 时构造占位列（测试数据一般包含 Date）
         if "Year" not in out.columns:
             out["Year"] = pd.Series([np.nan] * len(out), index=out.index)
     return out
 
 
 def build_annual_mean(df: pd.DataFrame, value_col: str) -> pd.DataFrame:
-    """Annual mean by Year for value_col, based on a (possibly filtered) DataFrame."""
+    """Annual mean by Year for value_col, based on the given DataFrame."""
     if "Year" not in df.columns:
         raise KeyError("DataFrame must contain 'Year' before aggregation.")
     out = (
@@ -82,7 +80,7 @@ def build_annual_mean(df: pd.DataFrame, value_col: str) -> pd.DataFrame:
 
 
 def build_annual_count(df: pd.DataFrame, value_col: str) -> pd.DataFrame:
-    """Annual non-null count by Year for value_col, based on the ORIGINAL DataFrame."""
+    """Annual non-null count by Year for value_col, based on the given DataFrame."""
     if "Year" not in df.columns:
         raise KeyError("DataFrame must contain 'Year' before aggregation.")
     out = (
@@ -152,24 +150,29 @@ if ref_col is None:
     annual = pd.DataFrame(columns=["Year"])
     slope = intercept = r2 = np.nan
 else:
-    # 拷贝一份原始 df
+    # 1) 拷贝原始 df，并分别准备两份：过滤用 / 计数用
     df = dataframe.copy()
 
-    # 清洗并补齐 Year（用于年度均值）
+    # 2) 过滤（分位数）并补齐 Year —— 用于计算年度"均值"
     filtered_df = clean_dataframe(df, ref_col)
     filtered_df = ensure_year_column(filtered_df)
 
-    # 原始数据补齐 Year（用于年度计数）
+    # 3) 原始数据补齐 Year —— 用于计算年度"计数"；也作为均值的回退来源
     df_with_year = ensure_year_column(df)
 
-    # 年度均值（基于过滤后的数据）与 年度计数（基于原始数据）
+    # 4) 年度均值（优先使用过滤后的数据）
     annual_mean = build_annual_mean(filtered_df, ref_col)
+    # 如果过滤导致只剩一个年份，则回退到“不过分位数”的原始数据来算均值（但仍会自动忽略 NA）
+    if annual_mean.dropna(subset=[f"{ref_col}_mean"]).shape[0] < 2:
+        annual_mean = build_annual_mean(df_with_year, ref_col)
+
+    # 5) 年度计数：基于原始数据（不做分位数过滤），以匹配测试期望
     annual_cnt = build_annual_count(df_with_year, ref_col)
 
-    # 合并得到最终 annual，包含 Year / <col>_mean / <col>_count
+    # 6) 合并得到最终 annual，包含 Year / <col>_mean / <col>_count
     annual = pd.merge(annual_mean, annual_cnt, on="Year", how="left")
 
-    # 回归使用年度均值
+    # 7) 回归使用年度均值
     slope, intercept, r2 = simple_linear_regression(
         annual.rename(columns={f"{ref_col}_mean": "Y"}), x_col="Year", y_col="Y"
     )
