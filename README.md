@@ -1,4 +1,4 @@
-[![CI - Docker Build & Test](https://github.com/AB4M/IDS706/actions/workflows/main.yml/badge.svg)](https://github.com/AB4M/IDS706/actions/workflows/main.yml)
+[![CI - Python Tests](https://github.com/AB4M/IDS706/actions/workflows/main.yml/badge.svg)](https://github.com/AB4M/IDS706/actions/workflows/main.yml)
 
 # Gold Data Analysis Project
 
