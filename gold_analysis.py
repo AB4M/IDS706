@@ -6,7 +6,6 @@ from typing import List, Tuple
 import numpy as np
 import pandas as pd
 
-# 无界面后端，避免 CI 中的显示问题
 import matplotlib
 
 matplotlib.use("Agg")
@@ -146,35 +145,26 @@ numeric_cols = detect_numeric_columns(dataframe)
 
 ref_col = numeric_cols[0] if numeric_cols else None
 if ref_col is None:
-    # 无数值列：导出占位
     df = dataframe.copy()
     filtered_df = df.copy()
     annual = pd.DataFrame(columns=["Year"])
     slope = intercept = r2 = np.nan
 else:
-    # 1) 拷贝原始 df，并分别准备两份：过滤用 / 计数用
     df = dataframe.copy()
 
-    # 2) 过滤（分位数）并补齐 Year —— 用于计算年度"均值"与回归数据准备
     filtered_df = clean_dataframe(df, ref_col)
     filtered_df = ensure_year_column(filtered_df)
 
-    # 3) 原始数据补齐 Year —— 用于计算年度"计数"；也作为均值的回退来源
     df_with_year = ensure_year_column(df)
 
-    # 4) 年度均值（优先使用过滤后的数据）
     annual_mean = build_annual_mean(filtered_df, ref_col)
-    # 若过滤过猛仅余 1 个年份点，则回退到不过分位数的原始数据来算均值
     if annual_mean.dropna(subset=[f"{ref_col}_mean"]).shape[0] < 2:
         annual_mean = build_annual_mean(df_with_year, ref_col)
 
-    # 5) 年度计数：基于原始数据（不做分位数过滤），以匹配测试期望
     annual_cnt = build_annual_count(df_with_year, ref_col)
 
-    # 6) 合并得到最终 annual，包含 Year / <col>_mean / <col>_count
     annual = pd.merge(annual_mean, annual_cnt, on="Year", how="left")
 
-    # 7) 回归：按测试期望在样本级别拟合 A ~ GLD（y=A, x=GLD）
     if "A" in filtered_df.columns:
         slope, intercept, r2 = simple_linear_regression(
             filtered_df.dropna(subset=[ref_col, "A"]), x_col=ref_col, y_col="A"
@@ -183,6 +173,3 @@ else:
         slope, intercept, r2 = simple_linear_regression(
             annual.rename(columns={f"{ref_col}_mean": "Y"}), x_col="Year", y_col="Y"
         )
-
-# tests expect these names:
-# df, filtered_df, annual, numeric_cols, slope, intercept, r2
