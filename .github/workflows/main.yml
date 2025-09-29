@@ -5,10 +5,13 @@ on:
     branches: [ main, master ]
   pull_request:
 
+concurrency:
+  group: docker-ci-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   build-and-test:
     runs-on: ubuntu-latest
-
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -21,31 +24,14 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
-      - name: Cache Docker layers
-        uses: actions/cache@v4
-        with:
-          path: /tmp/.buildx-cache
-          key: ${{ runner.os }}-buildx-${{ github.sha }}
-          restore-keys: |
-            ${{ runner.os }}-buildx-
-
-      - name: Build image
+      # 构建 test 目标；测试失败会让这一步直接失败
+      - name: Build (runs tests in Dockerfile target)
         uses: docker/build-push-action@v6
         with:
           context: .
           file: ./Dockerfile
-          tags: gold-analysis:ci
+          target: test
           push: false
-          load: true
-          cache-from: type=local,src=/tmp/.buildx-cache
-          cache-to: type=local,dest=/tmp/.buildx-cache-new,mode=max
-
-
-      - name: Move cache
-        run: |
-          rm -rf /tmp/.buildx-cache
-          mv /tmp/.buildx-cache-new /tmp/.buildx-cache
-
-      - name: Run tests in container
-        run: |
-          docker run --rm gold-analysis:ci
+          # 用 GHA 缓存后端，简单且命中率高
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
