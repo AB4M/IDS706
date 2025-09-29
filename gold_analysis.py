@@ -66,16 +66,19 @@ def ensure_year_column(df: pd.DataFrame) -> pd.DataFrame:
 
 
 def build_annual_agg(df: pd.DataFrame, value_col: str) -> pd.DataFrame:
-    """Aggregate by Year for the given value column (mean)."""
+    """Aggregate by Year for the given value column: mean and non-null count."""
     if "Year" not in df.columns:
         raise KeyError("DataFrame must contain 'Year' before aggregation.")
     annual = (
         df.dropna(subset=["Year"])
-        .groupby("Year", as_index=False)[value_col]
-        .mean()
-        .rename(columns={value_col: f"{value_col}_mean"})
+          .groupby("Year", as_index=False)[value_col]
+          .agg(["mean", "count"])           # 同时聚合：均值 + 计数（非空）
+          .reset_index()
     )
+    # 列重命名：Year, <col>_mean, <col>_count
+    annual.columns = ["Year", f"{value_col}_mean", f"{value_col}_count"]
     return annual
+
 
 
 def simple_linear_regression(
